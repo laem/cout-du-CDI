@@ -9,7 +9,14 @@ let input = {
   allegement_fillon_mode_recouvrement: 'anticipe_regularisation_fin_de_periode',
   allegement_cotisation_allocations_familiales_mode_recouvrement: 'anticipe_regularisation_fin_de_periode',
   contrat_de_travail_debut: '2016-03'
-}
+},
+url = 'https://openfisca-embauche.sgmap.fr/api/2/formula/2016-03/salaire_net?'
 
 let ici = document.querySelector('#ici')
-range(1467, 1470).map(n => ici.innerHTML += ` ${n} |`)
+range(1467, 1470).map(n => {
+  let input = Object.assign({}, input, {salaire_de_base: n})
+  let urlParameters = Object.keys(input).map(key => `${key}=${input[key]}`).join('&')
+  fetch(url + urlParameters)
+    .then(response => response.json())
+    .then(json => ici.innerHTML += json.values.salaire_net.toFixed(2))
+})
